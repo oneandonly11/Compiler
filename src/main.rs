@@ -1,7 +1,12 @@
+mod ast;
+mod IR;
+
+use IR::GenIR;
 use lalrpop_util::lalrpop_mod;
 use std::env::args;
 use std::fs::read_to_string;
 use std::io::Result;
+use koopa::back::KoopaGenerator;
 
 // 引用 lalrpop 生成的解析器
 // 因为我们刚刚创建了 sysy.lalrpop, 所以模块名是 sysy
@@ -23,7 +28,13 @@ fn main() -> Result<()> {
   let ast = sysy::CompUnitParser::new().parse(&input).unwrap();
 
   // 输出解析得到的 AST
-  println!("{}", ast);
+  println!("{:#?}", ast);
+
+  // 生成 IR
+  let ir = GenIR(&ast).unwrap();
+  let mut gen = KoopaGenerator::new(Vec::new());
+  gen.generate_on(&ir).unwrap();
+  std::fs::write(output, gen.writer()).expect("Unable to write");
   Ok(())
 }
 
