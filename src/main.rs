@@ -1,5 +1,6 @@
 mod ast;
 mod ir;
+mod asm;
 
 use ir::generateir;
 use lalrpop_util::lalrpop_mod;
@@ -7,6 +8,7 @@ use std::env::args;
 use std::fs::read_to_string;
 use std::io::Result;
 use koopa::back::KoopaGenerator;
+use crate::asm::generateassembly;
 
 // 引用 lalrpop 生成的解析器
 // 因为我们刚刚创建了 sysy.lalrpop, 所以模块名是 sysy
@@ -32,9 +34,24 @@ fn main() -> Result<()> {
 
   // 生成 IR
   let ir = generateir(&ast).unwrap();
-  let mut gen = KoopaGenerator::new(Vec::new());
-  gen.generate_on(&ir).unwrap();
-  std::fs::write(output, gen.writer()).expect("Unable to write");
+
+
+  match mode.as_str() {
+    // Convert in-memory Koopa IR to text, and write it to output file (hello.koopa).
+    "-koopa" => {
+      let mut gen = KoopaGenerator::new(Vec::new());
+      gen.generate_on(&ir).unwrap();
+      std::fs::write(output, gen.writer()).expect("Unable to write");
+    }
+    "-riscv" => {
+      generateassembly(&ir, &output).unwrap();
+    }
+    mode => {
+      panic!("Unknown mode: {}", mode);
+    }
+  }
+  
+  
   Ok(())
 }
 
