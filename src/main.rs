@@ -1,7 +1,7 @@
 mod ast;
-mod IR;
+mod ir;
 
-use IR::GenIR;
+use ir::generateir;
 use lalrpop_util::lalrpop_mod;
 use std::env::args;
 use std::fs::read_to_string;
@@ -31,7 +31,7 @@ fn main() -> Result<()> {
   println!("{:#?}", ast);
 
   // 生成 IR
-  let ir = GenIR(&ast).unwrap();
+  let ir = generateir(&ast).unwrap();
   let mut gen = KoopaGenerator::new(Vec::new());
   gen.generate_on(&ir).unwrap();
   std::fs::write(output, gen.writer()).expect("Unable to write");

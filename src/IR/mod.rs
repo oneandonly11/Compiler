@@ -1,11 +1,11 @@
 mod gen;
 
 use crate::ast::*;
-use crate::IR::gen::GenerateIR;
+use crate::ir::gen::GenerateIR;
 use koopa::ir::{Program};
 use koopa::ir::entities::{BasicBlock, Function};
 
-pub fn GenIR(comp_unit: &CompUnit) -> Result<Program,String> {
+pub fn generateir(comp_unit: &CompUnit) -> Result<Program,String> {
     let mut program = Program::new();
     let mut context = Context {
         cur_func: None,

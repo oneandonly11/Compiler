@@ -1,6 +1,6 @@
 use koopa::ir::{Program, FunctionData, Type, builder_traits::*};
 use crate::ast::*;
-use crate::IR::Context;
+use crate::ir::Context;
 
 pub trait GenerateIR {
     fn gen_ir(&self, program: &mut Program,context: &mut Context ) -> Result<(),String>;
